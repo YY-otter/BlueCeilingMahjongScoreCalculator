@@ -1,0 +1,1 @@
+# BlueCeilingMahjongScoreCalculator
