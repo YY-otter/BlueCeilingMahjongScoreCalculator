@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>BlueCeilingMahjongScoreCalculator</title>
+    <link href="./style.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    ルール:
+    <select name="players" id="players" onchange="initialize_rule_selected()">
+      <option value="4" selected>四麻</option>
+      <option value="3">三麻</option>
+    </select>
+    <select name="rule" id="rule" onchange="initialize_rule_selected()" disabled>
+      <option value="loss" selected>ツモ損</option>
+      <option value="northharf">北家分折半</option>
+      <option value="harf">折半</option>
+      <option value="triple">親3倍かぶり</option>
+    </select>
+     <button onclick="initialize_rule_selected()">リセット</button>
+
+    <br><br>
+
+    <table class="colondelimiter">
+      <tr>
+        <th class="item"><input type="text" class="player_name_input" id="1P_name" placeholder="1P" onchange="player_name_change()"></th><th class="value"><input type="number" class="player_points" id="1P_points" value="25000" readonly> <button onclick="deposit_score(1)">リーチ</button></th>
+      </tr><tr>
+        <th class="item"><input type="text" class="player_name_input" id="2P_name" placeholder="2P" onchange="player_name_change()"></th><th class="value"><input type="number" class="player_points" id="2P_points" value="25000" readonly> <button onclick="deposit_score(2)">リーチ</button></th>
+      </tr><tr>
+        <th class="item"><input type="text" class="player_name_input" id="3P_name" placeholder="3P" onchange="player_name_change()"></th><th class="value"><input type="number" class="player_points" id="3P_points" value="25000" readonly> <button onclick="deposit_score(3)">リーチ</button></th>
+      </tr><tr>
+        <th class="item"><input type="text" class="player_name_input" id="4P_name" placeholder="4P" onchange="player_name_change()"></th><th class="value"><input type="number" class="player_points" id="4P_points" value="25000" readonly> <button onclick="deposit_score(4)">リーチ</button></th>
+      </tr>
+    </table>
+
+    <br>
+
+    供託:<input type="number" class="points_deposit" id="points_deposit" value="0" readonly> 積み棒:<input type="number" class="points_stack" id="points_stack" value="0" readonly>本 <button onclick="stack_change(1)">+</button><button onclick="stack_change(-1)">-</button><button onclick="stack_change(0)">0</button>
+
+    <br><br>
+
+    <table class="colondelimiter">
+      <tr>
+        <th class="item">親</th><th class="value">
+          <label><input type="radio" name="leader" value="1" onchange="initialize_leader_selected()" checked><span class="player_name">1P</span></label>
+          <label><input type="radio" name="leader" value="2" onchange="initialize_leader_selected()"><span class="player_name">2P</span></label>
+          <label><input type="radio" name="leader" value="3" onchange="initialize_leader_selected()"><span class="player_name">3P</span></label>
+          <label><input type="radio" name="leader" value="4" onchange="initialize_leader_selected()"><span class="player_name">4P</span></label>
+        </th>
+      </tr><tr>
+        <th class="item">和了</th><th class="value">
+          <label><input type="radio" name="winner" value="1" onchange="initialize_winner_selected()" checked><span class="player_name">1P</span></label>
+          <label><input type="radio" name="winner" value="2" onchange="initialize_winner_selected()"><span class="player_name">2P</span></label>
+          <label><input type="radio" name="winner" value="3" onchange="initialize_winner_selected()"><span class="player_name">3P</span></label>
+          <label><input type="radio" name="winner" value="4" onchange="initialize_winner_selected()"><span class="player_name">4P</span></label>
+        </th>
+      </tr><tr>
+        <th class="item">ツモ・ロン</th><th class="value">
+          <label><input type="radio" name="win_type" value="0" checked><span>ツモ</span></label>
+          <label><input type="radio" name="win_type" value="1" disabled><span class="player_name">1P</span><span>放銃</span></label>
+          <label><input type="radio" name="win_type" value="2"><span class="player_name">2P</span><span>放銃</span></label>
+          <label><input type="radio" name="win_type" value="3"><span class="player_name">3P</span><span>放銃</span></label>
+          <label><input type="radio" name="win_type" value="4"><span class="player_name">4P</span><span>放銃</span></label>
+        </th>
+      </tr>
+    </table>
+
+    <br>
+
+    符:<input type="number" class="points" id="points" step="10" min="20"> 翻:<input type="number" class="doubles" id="doubles" min="1"> <button onclick="calc_score()">点数計算</button>
+
+    <br><br>
+
+    <table class="colondelimiter">
+      <tr>
+        <th class="item"><span class="player_name">1P</span></th><th class="value"><input type="number" class="player_change" id="1P_change" value="0" readonly></th>
+      </tr><tr>
+        <th class="item"><span class="player_name">2P</span></th><th class="value"><input type="number" class="player_change" id="2P_change" value="0" readonly></th>
+      </tr><tr>
+        <th class="item"><span class="player_name">3P</span></th><th class="value"><input type="number" class="player_change" id="3P_change" value="0" readonly></th>
+      </tr><tr>
+        <th class="item"><span class="player_name">4P</span></th><th class="value"><input type="number" class="player_change" id="4P_change" value="0" readonly></th>
+      </tr>
+    </table>
+
+    <br>
+    
+    <button onclick="move_score()">点数移動実行</button>
+
+    <br><br>
+
+    聴牌: <label><input type="checkbox" class="ready_hand" id="1P_ready_hand"><span class="player_name">1P</span></label>
+    <label><input type="checkbox" class="ready_hand" id="2P_ready_hand"><span class="player_name">2P</span></label>
+    <label><input type="checkbox" class="ready_hand" id="3P_ready_hand"><span class="player_name">3P</span></label>
+    <label><input type="checkbox" class="ready_hand" id="4P_ready_hand"><span class="player_name">4P</span></label>
+
+    <br><br>
+
+    <button onclick="move_penalty()">ノーテン罰符移動実行</button>
+
+    <br><br>
+
+    <details><summary>詳細設定</summary>
+    <table class="colondelimiter">
+      <tr>
+        <th class="item">配給原点</th><th class="value"><input type="number" class="tally" id="tally" value="25000" step="100" required></th>
+      </tr><tr>
+        <th class="item">リーチ棒点数</th><th class="value"><input type="number" class="call" id="call" value="1000" step="100" required></th>
+      </tr><tr>
+        <th class="item">積み棒点数</th><th class="value"><input type="number" class="stack" id="stack" value="100" step="100" required></th>
+      </tr><tr>
+        <th class="item">ノーテン罰符</th><th class="value"><input type="number" class="penalty" id="penalty" value="3000" step="100" required></th>
+      </tr>
+    </table>
+    </details>
+    <br>
+    <details><summary>説明</summary>
+    <p>
+    What's this?<br>
+    青天井で計算する麻雀点数計算ページです<br>
+    CSSをほぼ設定していないのでブラウザによっては見にくいかもです(一番見にくいのはこの説明欄)<br>
+    大抵のブラウザでは四倍役満ぐらいの和了から桁が全部表示されないかもしれません<br>
+    なお、ES2020に準拠しているブラウザでないと動作しません、IEは厳しいかも<br>
+    </p>
+    <p>
+    使用方法<br>
+    初めに人数(四麻or三麻)とルール(三麻のみ)を決めます<br>
+    1P、2P、3P、4Pと書かれている入力欄に名前を入力すると色々と見やすいかも<br>
+    リーチをした時にはリーチボタンを押すことで供託されます<br>
+    誰かが和了った際は、親・和了者・ツモor放銃のところをチェックし、和了の符と翻を入力の上、点数計算ボタンを押すと、下の各プレイヤー欄に移動点数が表示されます<br>
+    七対子の時は25符2翻で計算するのが普通ですが、25符は手入力のみ対応なので、めんどくさい場合は50符1翻としても同じ結果が得られます<br>
+    なお、押せないボタンは灰色になり名前が打ち消されているので、ありえない組み合わせにはならないはずです<br>
+    この点数には積み棒の点数が反映されているので、積み棒の本数が正しいかを確認し、間違っていた場合は修正ののち再び点数計算ボタンを押してください<br>
+    点数移動実行ボタンを押すと、移動点数が上部の全員の持ち点欄に反映され、和了者に供託の点数が移動します<br>
+    ノーテン罰符の移動が発生する際は、聴牌者にチェックを入れ、ノーテン罰符移動実行ボタンを押すと、罰符が移動します<br>
+    </p>
+    <p>
+    入力可能欄の書き方
+    <table class="colondelimiter">
+      <tr>
+        <th class="item">nP</th><th class="value">プレイヤー名を入力</th>
+      </tr><tr>
+        <th class="item">符</th><th class="value">和了時の符を入力<br>25、もしくは20以上の10の倍数でないとエラー<br>25は手入力でのみ入力可能</th>
+      </tr><tr>
+        <th class="item">翻</th><th class="value">和了時の符を入力<br>1以上の整数でないとエラー</th>
+      </tr>
+    </table>
+    </p>
+    <p>
+    詳細設定の書き方
+    <table class="colondelimiter">
+      <tr>
+        <th class="item">配給原点</th><th class="value">リセット時の各プレイヤーの持ち点<br>100の倍数でないとエラー、0や負の数も可能</th>
+      </tr><tr>
+        <th class="item">リーチ棒点数</th><th class="value">リーチ時、供託に出す点数<br>100の倍数でないとエラー、0や負の数も可能</th>
+      </tr><tr>
+        <th class="item">積み棒点数</th><th class="value">1本あたりの点数、和了時に他家人数倍の点数をもらえる<br>100の倍数でないとエラー、0や負の数も可能</th>
+      </tr><tr>
+        <th class="item">ノーテン罰符</th><th class="value">ノーテン時、場に出す点数の合計<br>四麻の場合600の倍数、三麻の場合200の倍数でないとエラー、0や負の数も可能</th>
+      </tr>
+    </table>
+    </p>
+    </details>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
