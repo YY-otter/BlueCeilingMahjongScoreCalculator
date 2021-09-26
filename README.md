@@ -9,7 +9,12 @@ Github自体を使い始めたばかりですので、このREADME.md含めま�
 
 Sorry, this page is not yet available in languages other than Japanese.
 
-更新履歴<br>
-v0.1.0<br>
+更新履歴
+
+v0.1.1 (2021-09-27T05:13+09:00)<br>
+URLをここに追記しました(ファイルの変更はありません)<br>
+https://yy-otter.github.io/BlueCeilingMahjongScoreCalculator/<br>
+
+v0.1.0 (2021-09-27T05:01+09:00)<br>
 Initial commit<br>
 とりあえず使えるとは思いますけど装飾もほとんどないので環境によっては見にくそう<br>
